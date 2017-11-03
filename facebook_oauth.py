@@ -6,15 +6,16 @@ from requests_oauthlib.compliance_fixes import facebook_compliance_fix # special
 import webbrowser
 import json
 from datetime import datetime
+import facebook_data
 
 # for Facebook oAuth
-APP_ID = ''
-APP_SECRET = ''
-AUTHORIZATION_BASE_URL = ''
-TOKEN_URL = ''
-REDIRECT_URI = ''
+APP_ID = facebook_data.app_id
+APP_SECRET = facebook_data.app_secret
+AUTHORIZATION_BASE_URL = 'https://www.facebook.com/v2.10/dialog/oauth'
+TOKEN_URL = 'https://graph.facebook.com/v2.10/oauth/access_token'
+REDIRECT_URI = 'https://www.programsinformationpeople.org/runestone/oauth'
 # REFRESH_URL = ''
-scope = []
+scope = ['user_posts']
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S.%f"
 facebook_session = False
@@ -76,3 +77,7 @@ def save_token(token_dict):
 
 
 # TODO use make_facebook_request
+response = make_facebook_request('https://graph.facebook.com/v2.10/me/feed')
+feed_data = response.json()  # Same as json.loads(response.text)
+for feed_item in feed_data['data']:
+    print(feed_item.get('message') or feed_item.get('story'))
